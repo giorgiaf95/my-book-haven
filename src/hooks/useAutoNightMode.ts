@@ -7,7 +7,7 @@ interface AutoNightModeSettings {
 }
 
 export function useAutoNightMode() {
-  const { setTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
   const [settings, setSettings] = useState<AutoNightModeSettings>(() => {
     const stored = localStorage.getItem("auto-night-mode-settings");
     if (stored) {
@@ -21,7 +21,7 @@ export function useAutoNightMode() {
   });
 
   // Check if current time is between 20:00 and 07:00
-  const isNightTime = () => {
+  const checkIsNightTime = () => {
     const hour = new Date().getHours();
     return hour >= 20 || hour < 7;
   };
@@ -42,12 +42,11 @@ export function useAutoNightMode() {
 
     if (settings.enabled) {
       const applyThemeBasedOnTime = () => {
-        const nightTime = isNightTime();
+        const nightTime = checkIsNightTime();
         if (nightTime) {
           // Save current theme before switching to dark (if not already dark)
-          const currentTheme = localStorage.getItem("theme");
-          if (currentTheme && currentTheme !== "dark") {
-            localStorage.setItem("theme-before-night-mode", currentTheme);
+          if (theme && theme !== "dark") {
+            localStorage.setItem("theme-before-night-mode", theme);
           }
           setTheme("dark");
         } else {
@@ -68,11 +67,11 @@ export function useAutoNightMode() {
 
       return () => clearInterval(interval);
     }
-  }, [settings, setTheme]);
+  }, [settings, theme, setTheme]);
 
   return {
     settings,
     updateSettings,
-    isNightTime: isNightTime(),
+    isNightTime: checkIsNightTime(),
   };
 }
