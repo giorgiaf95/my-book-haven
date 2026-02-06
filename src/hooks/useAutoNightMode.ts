@@ -41,17 +41,30 @@ export function useAutoNightMode() {
     }
 
     if (settings.enabled) {
+      const applyThemeBasedOnTime = () => {
+        const nightTime = isNightTime();
+        if (nightTime) {
+          // Save current theme before switching to dark (if not already dark)
+          const currentTheme = localStorage.getItem("theme");
+          if (currentTheme && currentTheme !== "dark") {
+            localStorage.setItem("theme-before-night-mode", currentTheme);
+          }
+          setTheme("dark");
+        } else {
+          // Restore previous theme when day time
+          const previousTheme = localStorage.getItem("theme-before-night-mode");
+          if (previousTheme) {
+            setTheme(previousTheme);
+            localStorage.removeItem("theme-before-night-mode");
+          }
+        }
+      };
+
       // Check immediately
-      if (isNightTime()) {
-        setTheme("dark");
-      }
+      applyThemeBasedOnTime();
 
       // Check every minute
-      const interval = setInterval(() => {
-        if (isNightTime()) {
-          setTheme("dark");
-        }
-      }, 60000); // 60 seconds
+      const interval = setInterval(applyThemeBasedOnTime, 60000);
 
       return () => clearInterval(interval);
     }

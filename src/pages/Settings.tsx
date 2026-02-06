@@ -83,9 +83,13 @@ export default function Settings() {
               </div>
               <Switch
                 checked={settings.enabled}
-                onCheckedChange={(checked) =>
-                  updateSettings({ enabled: checked, alwaysActive: false })
-                }
+                onCheckedChange={(checked) => {
+                  if (checked) {
+                    updateSettings({ enabled: true, alwaysActive: false });
+                  } else {
+                    updateSettings({ enabled: false });
+                  }
+                }}
                 disabled={settings.alwaysActive}
               />
             </div>
@@ -105,9 +109,13 @@ export default function Settings() {
               </div>
               <Switch
                 checked={settings.alwaysActive}
-                onCheckedChange={(checked) =>
-                  updateSettings({ alwaysActive: checked, enabled: false })
-                }
+                onCheckedChange={(checked) => {
+                  if (checked) {
+                    updateSettings({ alwaysActive: true, enabled: false });
+                  } else {
+                    updateSettings({ alwaysActive: false });
+                  }
+                }}
                 disabled={settings.enabled}
               />
             </div>
