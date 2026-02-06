@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useTheme } from "next-themes";
 
 interface AutoNightModeSettings {
@@ -8,6 +8,13 @@ interface AutoNightModeSettings {
 
 export function useAutoNightMode() {
   const { theme, setTheme } = useTheme();
+  const themeRef = useRef(theme);
+  
+  // Update ref when theme changes
+  useEffect(() => {
+    themeRef.current = theme;
+  }, [theme]);
+  
   const [settings, setSettings] = useState<AutoNightModeSettings>(() => {
     const stored = localStorage.getItem("auto-night-mode-settings");
     if (stored) {
@@ -43,18 +50,22 @@ export function useAutoNightMode() {
     if (settings.enabled) {
       const applyThemeBasedOnTime = () => {
         const nightTime = checkIsNightTime();
+        const currentTheme = themeRef.current || "light";
+        
         if (nightTime) {
           // Save current theme before switching to dark (if not already dark)
-          if (theme && theme !== "dark") {
-            localStorage.setItem("theme-before-night-mode", theme);
+          if (currentTheme !== "dark") {
+            localStorage.setItem("theme-before-night-mode", currentTheme);
+            setTheme("dark");
           }
-          setTheme("dark");
         } else {
-          // Restore previous theme when day time
-          const previousTheme = localStorage.getItem("theme-before-night-mode");
-          if (previousTheme) {
-            setTheme(previousTheme);
-            localStorage.removeItem("theme-before-night-mode");
+          // Restore previous theme when day time (only if currently on dark)
+          if (currentTheme === "dark") {
+            const previousTheme = localStorage.getItem("theme-before-night-mode");
+            if (previousTheme) {
+              setTheme(previousTheme);
+              localStorage.removeItem("theme-before-night-mode");
+            }
           }
         }
       };
@@ -67,7 +78,7 @@ export function useAutoNightMode() {
 
       return () => clearInterval(interval);
     }
-  }, [settings, theme, setTheme]);
+  }, [settings, setTheme]);
 
   return {
     settings,
