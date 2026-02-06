@@ -11,7 +11,24 @@ export interface Book {
   dateAdded: string;
   progress?: number;
   description?: string;
+  isbn?: string;
+  publisher?: string;
+  year?: number;
+  language?: string;
+  synopsis?: string;
 }
+
+export interface BookReview {
+  id: string;
+  bookId: string;
+  userName: string;
+  userAvatar: string;
+  rating: number;
+  text: string;
+  date: string;
+  likes: number;
+}
+
 
 export interface ReadingChallenge {
   id: string;
@@ -47,6 +64,11 @@ export const mockBooks: Book[] = [
     status: 'read',
     dateAdded: '2024-01-15',
     description: 'Un thriller ambientato in un monastero medievale.',
+    isbn: '978-88-452-4640-0',
+    publisher: 'Bompiani',
+    year: 1980,
+    language: 'Italiano',
+    synopsis: 'Siamo nel 1327. Il frate francescano Guglielmo da Baskerville, accompagnato dal giovane novizio Adso da Melk, arriva in un\'abbazia benedettina dell\'Italia settentrionale per partecipare a un\'importante disputa teologica. Ma il monastero è scosso da una serie di morti misteriose. I monaci muoiono uno dopo l\'altro in circostanze inspiegabili, e Guglielmo, con il suo acume da investigatore, inizia a indagare. La chiave del mistero sembra celarsi nella biblioteca, un immenso labirinto di conoscenza proibita. Un romanzo che intreccia giallo, storia, filosofia e semiotica.',
   },
   {
     id: '2',
@@ -60,6 +82,11 @@ export const mockBooks: Book[] = [
     status: 'read',
     dateAdded: '2024-02-20',
     description: 'La saga della famiglia Buendía a Macondo.',
+    isbn: '978-88-04-57835-6',
+    publisher: 'Mondadori',
+    year: 1967,
+    language: 'Italiano',
+    synopsis: 'La storia della famiglia Buendía, dalla fondazione del villaggio di Macondo fino alla sua distruzione, attraverso sette generazioni. Un affresco epico dove il reale e il fantastico si fondono in un racconto di amori impossibili, guerre civili, solitudine e destino ciclico.',
   },
   {
     id: '3',
@@ -142,6 +169,60 @@ export const mockBooks: Book[] = [
     description: 'Un mondo totalitario dove il Grande Fratello controlla tutto.',
   },
 ];
+
+export const mockReviews: BookReview[] = [
+  {
+    id: 'r1',
+    bookId: '1',
+    userName: 'Maria R.',
+    userAvatar: 'MR',
+    rating: 5,
+    text: 'Un capolavoro assoluto. La costruzione del mistero è magistrale e la descrizione dell\'abbazia ti trasporta nel medioevo. Eco riesce a mescolare erudizione e suspense in modo unico.',
+    date: '2024-11-20',
+    likes: 24,
+  },
+  {
+    id: 'r2',
+    bookId: '1',
+    userName: 'Luca P.',
+    userAvatar: 'LP',
+    rating: 4,
+    text: 'Affascinante ma impegnativo. Le digressioni filosofiche a volte rallentano la trama, ma il finale ripaga ogni sforzo. Consigliato a lettori pazienti.',
+    date: '2024-10-15',
+    likes: 18,
+  },
+  {
+    id: 'r3',
+    bookId: '1',
+    userName: 'Sofia V.',
+    userAvatar: 'SV',
+    rating: 5,
+    text: 'Lo rileggo ogni anno e ogni volta scopro dettagli nuovi. La biblioteca labirintica è una delle immagini più potenti della letteratura moderna.',
+    date: '2024-09-08',
+    likes: 31,
+  },
+  {
+    id: 'r4',
+    bookId: '2',
+    userName: 'Andrea M.',
+    userAvatar: 'AM',
+    rating: 5,
+    text: 'Poesia pura. Márquez crea un universo dove il tempo è circolare e la magia è quotidiana. Un libro che ti cambia il modo di leggere.',
+    date: '2024-12-01',
+    likes: 42,
+  },
+  {
+    id: 'r5',
+    bookId: '3',
+    userName: 'Giulia F.',
+    userAvatar: 'GF',
+    rating: 4,
+    text: 'Murakami sa raccontare la malinconia come nessun altro. Toru Watanabe è un personaggio indimenticabile. Lettura perfetta per le sere d\'autunno.',
+    date: '2025-01-10',
+    likes: 15,
+  },
+];
+
 
 export const mockChallenges: ReadingChallenge[] = [
   {

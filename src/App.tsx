@@ -9,6 +9,7 @@ import Library from "./pages/Library";
 import Explore from "./pages/Explore";
 import Community from "./pages/Community";
 import Challenges from "./pages/Challenges";
+import BookDetail from "./pages/BookDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
             <Route path="/explore" element={<Explore />} />
             <Route path="/community" element={<Community />} />
             <Route path="/challenges" element={<Challenges />} />
+            <Route path="/book/:id" element={<BookDetail />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AppLayout>
