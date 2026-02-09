@@ -11,6 +11,9 @@ import Community from "./pages/Community";
 import Challenges from "./pages/Challenges";
 import BookDetail from "./pages/BookDetail";
 import Profile from "./pages/Profile";
+import Wishlist from "./pages/Wishlist";
+import MyLists from "./pages/MyLists";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +33,9 @@ const App = () => (
             <Route path="/challenges" element={<Challenges />} />
             <Route path="/book/:id" element={<BookDetail />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/wishlist" element={<Wishlist />} />
+            <Route path="/my-lists" element={<MyLists />} />
+            <Route path="/settings" element={<Settings />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AppLayout>

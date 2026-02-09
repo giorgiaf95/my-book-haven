@@ -2,10 +2,11 @@ import { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   Home, BookOpen, Compass, Users, Trophy, QrCode, Search, Bell, User,
-  Settings, LogOut, Library, Heart, ListChecks, UserCircle, ChevronDown
+  Settings, LogOut, Library, Heart, ListChecks, UserCircle, ChevronDown, BarChart3
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
+import { SearchOverlay } from "@/components/SearchOverlay";
 
 const navItems = [
   { path: "/", label: "Home", icon: Home },
@@ -17,15 +18,16 @@ const navItems = [
 
 const profileMenuItems = [
   { label: "Il mio profilo", icon: UserCircle, path: "/profile" },
-  { label: "I miei preferiti", icon: Heart, path: "/library?tag=preferiti" },
-  { label: "Le mie liste", icon: ListChecks, path: "/library" },
-  { label: "Statistiche", icon: Library, path: "/" },
+  { label: "I miei preferiti", icon: Heart, path: "/wishlist" },
+  { label: "Le mie liste", icon: ListChecks, path: "/my-lists" },
+  { label: "Statistiche", icon: BarChart3, path: "/profile" },
   { label: "Impostazioni", icon: Settings, path: "/settings" },
 ];
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const [profileOpen, setProfileOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   // Close on outside click
@@ -81,7 +83,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             <button className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
               <QrCode className="h-5 w-5" />
             </button>
-            <button className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
+            <button onClick={() => setSearchOpen(true)} className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
               <Search className="h-5 w-5" />
             </button>
             <button className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors relative">
@@ -165,6 +167,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           </div>
         </div>
       </header>
+
+      {/* Search overlay */}
+      <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
 
       {/* Main content */}
       <main className="pb-20 md:pb-8">

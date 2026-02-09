@@ -1,76 +1,53 @@
 import { Link } from "react-router-dom";
-import { BookOpen, Compass, Users, Trophy, ArrowRight, TrendingUp } from "lucide-react";
+import { BookOpen, ArrowRight, Users, MessageSquare, Newspaper, Clock } from "lucide-react";
 import { motion } from "framer-motion";
 import { BookCard } from "@/components/BookCard";
-import { ChallengeCard } from "@/components/ChallengeCard";
-import { mockBooks, mockChallenges } from "@/lib/mockData";
+import { mockBooks, mockCommunities } from "@/lib/mockData";
 
-const stats = [
-  { label: "Libri letti", value: "34", icon: BookOpen, color: "bg-primary/10 text-primary" },
-  { label: "In lettura", value: "2", icon: TrendingUp, color: "bg-accent/10 text-accent" },
-  { label: "Pagine", value: "6.780", icon: BookOpen, color: "bg-rose-soft/10 text-rose-soft" },
+const platformNews = [
+  { id: "n1", title: "Nuova funzionalità: Scansione QR per aggiungere libri", date: "2026-02-08", emoji: "📸" },
+  { id: "n2", title: "Sfida di San Valentino: Leggi un romanzo d'amore", date: "2026-02-05", emoji: "💝" },
+  { id: "n3", title: "Aggiornamento temi: 3 nuovi temi disponibili", date: "2026-02-01", emoji: "🎨" },
+];
+
+const friendsActivity = [
+  { id: "f1", user: "Sofia V.", avatar: "SV", action: "ha finito di leggere", book: "Il nome della rosa", time: "2 ore fa" },
+  { id: "f2", user: "Andrea M.", avatar: "AM", action: "ha iniziato", book: "Dune", time: "5 ore fa" },
+  { id: "f3", user: "Giulia F.", avatar: "GF", action: "ha recensito", book: "Norwegian Wood", time: "1 giorno fa" },
+  { id: "f4", user: "Luca P.", avatar: "LP", action: "ha aggiunto alla wishlist", book: "1984", time: "2 giorni fa" },
+];
+
+const groupUpdates = [
+  { id: "gu1", group: "Lettori Notturni", text: "Nuovo libro del mese: 'La metamorfosi' di Kafka", time: "3 ore fa", members: 3421 },
+  { id: "gu2", group: "Book & Coffee", text: "Meetup virtuale questo sabato alle 18:00!", time: "1 giorno fa", members: 5234 },
+  { id: "gu3", group: "Manga & Fumetti", text: "Classifica manga più letti di Gennaio pubblicata", time: "2 giorni fa", members: 6789 },
 ];
 
 const Index = () => {
-  const currentlyReading = mockBooks.filter(b => b.status === 'reading');
-  const recentBooks = mockBooks.slice(0, 6);
+  const currentlyReading = mockBooks.filter(b => b.status === "reading");
 
   return (
-    <div className="container py-6 md:py-10 space-y-10">
-      {/* Hero */}
-      <motion.section
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 via-background to-accent/10 p-6 md:p-10"
-      >
-        <div className="relative z-10">
-          <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground">
-            Bentornato, <span className="text-primary">Lettore</span> 📚
-          </h1>
-          <p className="mt-2 text-muted-foreground max-w-lg">
-            Hai letto 6.780 pagine quest'anno. Continua così per completare la sfida Pagine d'Oro!
-          </p>
-
-          {/* Stats */}
-          <div className="flex flex-wrap gap-3 mt-6">
-            {stats.map((stat, i) => {
-              const Icon = stat.icon;
-              return (
-                <motion.div
-                  key={stat.label}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.2 + i * 0.1 }}
-                  className="flex items-center gap-3 rounded-xl bg-card px-4 py-3 shadow-card"
-                >
-                  <div className={`p-2 rounded-lg ${stat.color}`}>
-                    <Icon className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <p className="text-lg font-bold text-foreground">{stat.value}</p>
-                    <p className="text-[10px] text-muted-foreground uppercase tracking-wide">{stat.label}</p>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
-        {/* Decorative element */}
-        <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-primary/5 blur-3xl" />
-        <div className="absolute -left-10 -bottom-10 h-40 w-40 rounded-full bg-accent/5 blur-3xl" />
-      </motion.section>
+    <div className="container py-6 md:py-10 space-y-8 max-w-4xl">
+      {/* Greeting */}
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}>
+        <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">
+          Bentornato, <span className="text-primary">Marco</span> 👋
+        </h1>
+        <p className="text-sm text-muted-foreground mt-1">Ecco cosa è successo mentre non c'eri</p>
+      </motion.div>
 
       {/* Currently Reading */}
       {currentlyReading.length > 0 && (
         <section>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-display text-xl font-bold text-foreground">In lettura</h2>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="font-display text-lg font-bold text-foreground flex items-center gap-2">
+              <Clock className="h-4 w-4 text-primary" /> Stai leggendo
+            </h2>
             <Link to="/library?status=reading" className="text-xs text-primary font-medium flex items-center gap-1 hover:gap-2 transition-all">
-              Vedi tutti <ArrowRight className="h-3 w-3" />
+              Tutti <ArrowRight className="h-3 w-3" />
             </Link>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
             {currentlyReading.map((book, i) => (
               <BookCard key={book.id} book={book} index={i} />
             ))}
@@ -78,68 +55,87 @@ const Index = () => {
         </section>
       )}
 
-      {/* Active Challenges */}
+      {/* Friends Activity */}
       <section>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="font-display text-xl font-bold text-foreground flex items-center gap-2">
-            <Trophy className="h-5 w-5 text-primary" /> Le tue sfide
-          </h2>
-          <Link to="/challenges" className="text-xs text-primary font-medium flex items-center gap-1 hover:gap-2 transition-all">
-            Tutte le sfide <ArrowRight className="h-3 w-3" />
-          </Link>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {mockChallenges.slice(0, 2).map((challenge, i) => (
-            <ChallengeCard key={challenge.id} challenge={challenge} index={i} />
-          ))}
-        </div>
-      </section>
-
-      {/* Recent Library */}
-      <section>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="font-display text-xl font-bold text-foreground">La tua libreria</h2>
-          <Link to="/library" className="text-xs text-primary font-medium flex items-center gap-1 hover:gap-2 transition-all">
-            Vedi tutto <ArrowRight className="h-3 w-3" />
-          </Link>
-        </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          {recentBooks.map((book, i) => (
-            <BookCard key={book.id} book={book} index={i} />
-          ))}
-        </div>
-      </section>
-
-      {/* Quick Links */}
-      <section className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        {[
-          { to: "/explore", icon: Compass, label: "Esplora nuovi libri", color: "bg-primary/10 text-primary" },
-          { to: "/community", icon: Users, label: "Community", color: "bg-accent/10 text-accent" },
-          { to: "/challenges", icon: Trophy, label: "Sfide attive", color: "bg-rose-soft/10 text-rose-soft" },
-          { to: "/library", icon: BookOpen, label: "La tua libreria", color: "bg-purple-soft/10 text-purple-soft" },
-        ].map((item, i) => {
-          const Icon = item.icon;
-          return (
+        <h2 className="font-display text-lg font-bold text-foreground flex items-center gap-2 mb-3">
+          <Users className="h-4 w-4 text-primary" /> Attività amici
+        </h2>
+        <div className="space-y-2">
+          {friendsActivity.map((a, i) => (
             <motion.div
-              key={item.to}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 + i * 0.08 }}
+              key={a.id}
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: i * 0.05 }}
+              className="flex items-center gap-3 rounded-xl bg-card border border-border p-3 shadow-card"
             >
-              <Link
-                to={item.to}
-                className="flex items-center gap-3 rounded-xl bg-card p-4 shadow-card hover:shadow-card-hover transition-all duration-300 group"
-              >
-                <div className={`p-2.5 rounded-lg ${item.color}`}>
-                  <Icon className="h-5 w-5" />
-                </div>
-                <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
-                  {item.label}
-                </span>
-              </Link>
+              <div className="h-9 w-9 rounded-full bg-secondary flex items-center justify-center text-secondary-foreground text-xs font-bold shrink-0">
+                {a.avatar}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm text-foreground">
+                  <span className="font-semibold">{a.user}</span>{" "}
+                  <span className="text-muted-foreground">{a.action}</span>{" "}
+                  <span className="font-medium text-primary">{a.book}</span>
+                </p>
+                <p className="text-[10px] text-muted-foreground">{a.time}</p>
+              </div>
             </motion.div>
-          );
-        })}
+          ))}
+        </div>
+      </section>
+
+      {/* Group Updates */}
+      <section>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="font-display text-lg font-bold text-foreground flex items-center gap-2">
+            <MessageSquare className="h-4 w-4 text-primary" /> Dai tuoi gruppi
+          </h2>
+          <Link to="/community" className="text-xs text-primary font-medium flex items-center gap-1 hover:gap-2 transition-all">
+            Tutti i gruppi <ArrowRight className="h-3 w-3" />
+          </Link>
+        </div>
+        <div className="space-y-2">
+          {groupUpdates.map((gu, i) => (
+            <motion.div
+              key={gu.id}
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.1 + i * 0.05 }}
+              className="rounded-xl bg-card border border-border p-4 shadow-card"
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-accent">{gu.group}</span>
+                <span className="text-[10px] text-muted-foreground">{gu.time}</span>
+              </div>
+              <p className="text-sm text-foreground mt-1">{gu.text}</p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* Platform News */}
+      <section>
+        <h2 className="font-display text-lg font-bold text-foreground flex items-center gap-2 mb-3">
+          <Newspaper className="h-4 w-4 text-primary" /> Novità dalla piattaforma
+        </h2>
+        <div className="space-y-2">
+          {platformNews.map((news, i) => (
+            <motion.div
+              key={news.id}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 + i * 0.05 }}
+              className="flex items-center gap-3 rounded-xl bg-card border border-border p-3 shadow-card"
+            >
+              <span className="text-xl">{news.emoji}</span>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-foreground">{news.title}</p>
+                <p className="text-[10px] text-muted-foreground">{news.date}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </section>
     </div>
   );
