@@ -112,7 +112,7 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
                   <div className="p-2 border-t border-border">
                     <p className="px-2 py-1 text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Gruppi</p>
                     {matchedGroups.map(g => (
-                      <Link key={g.id} to="/community" onClick={onClose} className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-secondary transition-colors">
+                      <Link key={g.id} to={`/community/${g.id}`} onClick={onClose} className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-secondary transition-colors">
                         <Users className="h-4 w-4 text-muted-foreground" />
                         <div>
                           <p className="text-sm font-medium text-foreground">{g.name}</p>
@@ -127,7 +127,7 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
                   <div className="p-2 border-t border-border">
                     <p className="px-2 py-1 text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Sfide</p>
                     {matchedChallenges.map(c => (
-                      <Link key={c.id} to="/challenges" onClick={onClose} className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-secondary transition-colors">
+                      <Link key={c.id} to={`/challenge/${c.id}`} onClick={onClose} className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-secondary transition-colors">
                         <Trophy className="h-4 w-4 text-muted-foreground" />
                         <p className="text-sm font-medium text-foreground">{c.title}</p>
                       </Link>

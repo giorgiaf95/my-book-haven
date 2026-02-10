@@ -5,22 +5,22 @@ import { BookCard } from "@/components/BookCard";
 import { mockBooks, mockCommunities } from "@/lib/mockData";
 
 const platformNews = [
-  { id: "n1", title: "Nuova funzionalità: Scansione QR per aggiungere libri", date: "2026-02-08", emoji: "📸" },
-  { id: "n2", title: "Sfida di San Valentino: Leggi un romanzo d'amore", date: "2026-02-05", emoji: "💝" },
-  { id: "n3", title: "Aggiornamento temi: 3 nuovi temi disponibili", date: "2026-02-01", emoji: "🎨" },
+  { id: "n1", title: "Nuova funzionalità: Scansione QR per aggiungere libri", date: "2026-02-08", emoji: "📸", link: "/settings" },
+  { id: "n2", title: "Sfida di San Valentino: Leggi un romanzo d'amore", date: "2026-02-05", emoji: "💝", link: "/challenges" },
+  { id: "n3", title: "Aggiornamento temi: 3 nuovi temi disponibili", date: "2026-02-01", emoji: "🎨", link: "/settings" },
 ];
 
 const friendsActivity = [
-  { id: "f1", user: "Sofia V.", avatar: "SV", action: "ha finito di leggere", book: "Il nome della rosa", time: "2 ore fa" },
-  { id: "f2", user: "Andrea M.", avatar: "AM", action: "ha iniziato", book: "Dune", time: "5 ore fa" },
-  { id: "f3", user: "Giulia F.", avatar: "GF", action: "ha recensito", book: "Norwegian Wood", time: "1 giorno fa" },
-  { id: "f4", user: "Luca P.", avatar: "LP", action: "ha aggiunto alla wishlist", book: "1984", time: "2 giorni fa" },
+  { id: "f1", user: "Sofia V.", avatar: "SV", action: "ha finito di leggere", book: "Il nome della rosa", bookId: "1", time: "2 ore fa" },
+  { id: "f2", user: "Andrea M.", avatar: "AM", action: "ha iniziato", book: "Dune", bookId: "4", time: "5 ore fa" },
+  { id: "f3", user: "Giulia F.", avatar: "GF", action: "ha recensito", book: "Norwegian Wood", bookId: "3", time: "1 giorno fa" },
+  { id: "f4", user: "Luca P.", avatar: "LP", action: "ha aggiunto alla wishlist", book: "1984", bookId: "8", time: "2 giorni fa" },
 ];
 
 const groupUpdates = [
-  { id: "gu1", group: "Lettori Notturni", text: "Nuovo libro del mese: 'La metamorfosi' di Kafka", time: "3 ore fa", members: 3421 },
-  { id: "gu2", group: "Book & Coffee", text: "Meetup virtuale questo sabato alle 18:00!", time: "1 giorno fa", members: 5234 },
-  { id: "gu3", group: "Manga & Fumetti", text: "Classifica manga più letti di Gennaio pubblicata", time: "2 giorni fa", members: 6789 },
+  { id: "gu1", group: "Lettori Notturni", groupId: "1", text: "Nuovo libro del mese: 'La metamorfosi' di Kafka", time: "3 ore fa", members: 3421 },
+  { id: "gu2", group: "Book & Coffee", groupId: "3", text: "Meetup virtuale questo sabato alle 18:00!", time: "1 giorno fa", members: 5234 },
+  { id: "gu3", group: "Manga & Fumetti", groupId: "6", text: "Classifica manga più letti di Gennaio pubblicata", time: "2 giorni fa", members: 6789 },
 ];
 
 const Index = () => {
@@ -69,14 +69,14 @@ const Index = () => {
               transition={{ delay: i * 0.05 }}
               className="flex items-center gap-3 rounded-xl bg-card border border-border p-3 shadow-card"
             >
-              <div className="h-9 w-9 rounded-full bg-secondary flex items-center justify-center text-secondary-foreground text-xs font-bold shrink-0">
+              <Link to="/profile" className="h-9 w-9 rounded-full bg-secondary flex items-center justify-center text-secondary-foreground text-xs font-bold shrink-0 hover:ring-2 hover:ring-primary/30 transition-all">
                 {a.avatar}
-              </div>
+              </Link>
               <div className="flex-1 min-w-0">
                 <p className="text-sm text-foreground">
-                  <span className="font-semibold">{a.user}</span>{" "}
+                  <Link to="/profile" className="font-semibold hover:text-primary transition-colors">{a.user}</Link>{" "}
                   <span className="text-muted-foreground">{a.action}</span>{" "}
-                  <span className="font-medium text-primary">{a.book}</span>
+                  <Link to={`/book/${a.bookId}`} className="font-medium text-primary hover:underline">{a.book}</Link>
                 </p>
                 <p className="text-[10px] text-muted-foreground">{a.time}</p>
               </div>
@@ -105,7 +105,7 @@ const Index = () => {
               className="rounded-xl bg-card border border-border p-4 shadow-card"
             >
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-accent">{gu.group}</span>
+                <Link to={`/community/${gu.groupId}`} className="text-xs font-semibold text-accent hover:underline">{gu.group}</Link>
                 <span className="text-[10px] text-muted-foreground">{gu.time}</span>
               </div>
               <p className="text-sm text-foreground mt-1">{gu.text}</p>
@@ -121,19 +121,21 @@ const Index = () => {
         </h2>
         <div className="space-y-2">
           {platformNews.map((news, i) => (
-            <motion.div
-              key={news.id}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 + i * 0.05 }}
-              className="flex items-center gap-3 rounded-xl bg-card border border-border p-3 shadow-card"
-            >
-              <span className="text-xl">{news.emoji}</span>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-foreground">{news.title}</p>
-                <p className="text-[10px] text-muted-foreground">{news.date}</p>
-              </div>
-            </motion.div>
+            <Link key={news.id} to={news.link}>
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 + i * 0.05 }}
+                className="flex items-center gap-3 rounded-xl bg-card border border-border p-3 shadow-card hover:shadow-card-hover transition-all"
+              >
+                <span className="text-xl">{news.emoji}</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-foreground">{news.title}</p>
+                  <p className="text-[10px] text-muted-foreground">{news.date}</p>
+                </div>
+                <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
+              </motion.div>
+            </Link>
           ))}
         </div>
       </section>
