@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Settings as SettingsIcon, User, Bell, Palette, Shield, Globe, LogOut } from "lucide-react";
+import { Settings as SettingsIcon, User, Bell, Palette, Shield, Globe, LogOut, Check } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useTheme } from "@/lib/ThemeProvider";
 
 type SettingsSection = "profile" | "notifications" | "appearance" | "privacy" | "language";
 
@@ -13,6 +14,12 @@ const sections = [
   { id: "language" as const, label: "Lingua", icon: Globe },
 ];
 
+const themes = [
+  { id: "light" as const, name: "Chiaro", preview: "bg-[hsl(36,33%,97%)]", border: "border-[hsl(30,15%,88%)]", dot: "bg-[hsl(28,80%,52%)]" },
+  { id: "dark" as const, name: "Scuro", preview: "bg-[hsl(24,10%,10%)]", border: "border-[hsl(24,8%,20%)]", dot: "bg-[hsl(28,80%,55%)]" },
+  { id: "sepia" as const, name: "Seppia", preview: "bg-[hsl(35,40%,92%)]", border: "border-[hsl(30,25%,78%)]", dot: "bg-[hsl(28,65%,48%)]" },
+];
+
 const Settings = () => {
   const [active, setActive] = useState<SettingsSection>("profile");
   const [notifEmail, setNotifEmail] = useState(true);
@@ -22,13 +29,14 @@ const Settings = () => {
   const [profilePublic, setProfilePublic] = useState(true);
   const [showActivity, setShowActivity] = useState(true);
   const [language, setLanguage] = useState("it");
+  const { theme, setTheme } = useTheme();
 
   const Toggle = ({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) => (
     <button
       onClick={() => onChange(!checked)}
       className={cn("w-10 h-6 rounded-full transition-colors relative", checked ? "bg-primary" : "bg-border")}
     >
-      <span className={cn("absolute top-1 h-4 w-4 rounded-full bg-white transition-transform", checked ? "left-5" : "left-1")} />
+      <span className={cn("absolute top-1 h-4 w-4 rounded-full bg-card transition-transform", checked ? "left-5" : "left-1")} />
     </button>
   );
 
@@ -116,15 +124,30 @@ const Settings = () => {
           {active === "appearance" && (
             <div className="space-y-5">
               <h2 className="font-display font-semibold text-lg text-foreground">Aspetto</h2>
-              <p className="text-sm text-muted-foreground">Personalizza l'aspetto dell'app (prossimamente con temi selezionabili)</p>
+              <p className="text-sm text-muted-foreground">Seleziona il tema dell'app</p>
               <div className="grid grid-cols-3 gap-3">
-                {[
-                  { name: "Chiaro", colors: "bg-amber-50 border-amber-200" },
-                  { name: "Scuro", colors: "bg-zinc-800 border-zinc-600" },
-                  { name: "Seppia", colors: "bg-orange-50 border-orange-200" },
-                ].map(theme => (
-                  <button key={theme.name} className={cn("rounded-xl border-2 p-4 text-center text-sm font-medium transition-all hover:scale-105", theme.colors, theme.name === "Chiaro" ? "ring-2 ring-primary" : "")}>
-                    {theme.name}
+                {themes.map(t => (
+                  <button
+                    key={t.id}
+                    onClick={() => setTheme(t.id)}
+                    className={cn(
+                      "rounded-xl border-2 p-4 text-center transition-all hover:scale-105 relative",
+                      t.preview, t.border,
+                      theme === t.id && "ring-2 ring-primary ring-offset-2 ring-offset-card"
+                    )}
+                  >
+                    <div className={cn("w-4 h-4 rounded-full mx-auto mb-2", t.dot)} />
+                    <span className={cn(
+                      "text-sm font-medium",
+                      t.id === "dark" ? "text-[hsl(36,20%,90%)]" : "text-[hsl(24,10%,15%)]"
+                    )}>
+                      {t.name}
+                    </span>
+                    {theme === t.id && (
+                      <span className="absolute top-2 right-2">
+                        <Check className={cn("h-4 w-4", t.id === "dark" ? "text-[hsl(28,80%,55%)]" : "text-[hsl(28,80%,52%)]")} />
+                      </span>
+                    )}
                   </button>
                 ))}
               </div>

@@ -138,14 +138,11 @@ const Profile = () => {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-3 sm:grid-cols-6 gap-3 mt-6 pt-5 border-t border-border">
+        <div className="grid grid-cols-3 gap-3 mt-6 pt-5 border-t border-border">
           {[
-            { label: "Libri", value: profileData.stats.books },
-            { label: "Recensioni", value: profileData.stats.reviews },
             { label: "Follower", value: profileData.stats.followers },
             { label: "Seguiti", value: profileData.stats.following },
-            { label: "Pagine lette", value: profileData.stats.pagesRead.toLocaleString() },
-            { label: "Sfide vinte", value: profileData.stats.challengesCompleted },
+            { label: "Recensioni", value: profileData.stats.reviews },
           ].map(stat => (
             <div key={stat.label} className="text-center">
               <p className="text-lg font-bold text-foreground font-display">{stat.value}</p>
@@ -342,7 +339,7 @@ const Profile = () => {
               <h3 className="font-display font-semibold text-lg text-foreground">Gruppi iscritti</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {mockCommunities.filter(c => c.isJoined).map(community => (
-                  <Link key={community.id} to="/community" className="rounded-xl bg-card border border-border shadow-card overflow-hidden hover:shadow-card-hover transition-all group">
+                  <Link key={community.id} to={`/community/${community.id}`} className="rounded-xl bg-card border border-border shadow-card overflow-hidden hover:shadow-card-hover transition-all group">
                     <div className="h-24 overflow-hidden">
                       <img src={community.image} alt={community.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     </div>

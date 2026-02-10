@@ -106,6 +106,49 @@
     --shadow-card-hover: 0 8px 24px -4px hsl(0 0% 0% / 0.4);
     --shadow-float: 0 12px 40px -8px hsl(0 0% 0% / 0.5);
   }
+
+  .sepia {
+    --background: 35 40% 92%;
+    --foreground: 25 30% 18%;
+
+    --card: 35 35% 95%;
+    --card-foreground: 25 30% 18%;
+
+    --popover: 35 35% 95%;
+    --popover-foreground: 25 30% 18%;
+
+    --primary: 28 65% 48%;
+    --primary-foreground: 35 40% 96%;
+
+    --secondary: 33 30% 86%;
+    --secondary-foreground: 25 25% 28%;
+
+    --muted: 33 25% 87%;
+    --muted-foreground: 25 15% 45%;
+
+    --accent: 168 35% 38%;
+    --accent-foreground: 35 40% 96%;
+
+    --destructive: 0 60% 48%;
+    --destructive-foreground: 35 40% 96%;
+
+    --border: 30 25% 78%;
+    --input: 30 25% 78%;
+    --ring: 28 65% 48%;
+
+    --sidebar-background: 35 35% 89%;
+    --sidebar-foreground: 25 25% 28%;
+    --sidebar-primary: 28 65% 48%;
+    --sidebar-primary-foreground: 35 40% 96%;
+    --sidebar-accent: 33 30% 84%;
+    --sidebar-accent-foreground: 25 25% 28%;
+    --sidebar-border: 30 25% 78%;
+    --sidebar-ring: 28 65% 48%;
+
+    --shadow-card: 0 2px 12px -2px hsl(28 30% 40% / 0.1);
+    --shadow-card-hover: 0 8px 24px -4px hsl(28 30% 40% / 0.18);
+    --shadow-float: 0 12px 40px -8px hsl(28 30% 40% / 0.25);
+  }
 }
 
 @layer base {
