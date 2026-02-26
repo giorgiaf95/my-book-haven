@@ -1,12 +1,13 @@
 import { useState, useRef, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Home, BookOpen, Compass, Users, Trophy, QrCode, Search, Bell, User,
-  Settings, LogOut, Heart, ListChecks, UserCircle, ChevronDown, BarChart3, X
+  Settings, LogOut, Heart, ListChecks, UserCircle, ChevronDown, BarChart3
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { SearchOverlay } from "@/components/SearchOverlay";
+import { useAuth } from "@/lib/auth";
 
 const navItems = [
   { path: "/", label: "Home", icon: Home },
@@ -18,6 +19,7 @@ const navItems = [
 
 const profileMenuItems = [
   { label: "Il mio profilo", icon: UserCircle, path: "/profile" },
+  { label: "Amici", icon: Users, path: "/friends" },
   { label: "Wishlist", icon: Heart, path: "/wishlist" },
   { label: "Le mie liste", icon: ListChecks, path: "/my-lists" },
   { label: "Statistiche", icon: BarChart3, path: "/statistics" },
@@ -33,7 +35,9 @@ const mockNotifications = [
 ];
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
+  const navigate = useNavigate();
   const location = useLocation();
+  const { user, logout } = useAuth();
   const [profileOpen, setProfileOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -58,14 +62,33 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     setNotifOpen(false);
   }, [location.pathname]);
 
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setSearchOpen(prev => !prev);
+      }
+    };
+    document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
+  }, []);
+
+  const handleLogout = () => {
+    logout();
+    setProfileOpen(false);
+    setNotifOpen(false);
+    setSearchOpen(false);
+    navigate("/login", { replace: true });
+  };
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Top bar */}
       <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-lg">
         <div className="container flex h-16 items-center gap-4">
           <Link to="/" className="flex items-center gap-2 shrink-0">
-            <BookOpen className="h-7 w-7 text-primary" />
-            <span className="font-display text-xl font-bold text-foreground hidden sm:inline">Biblion</span>
+            <img src="/bixblion-logo.svg" alt="Bixblion" className="h-7 w-7" />
+            <span className="font-display text-xl font-bold text-foreground hidden sm:inline">Bixblion</span>
           </Link>
 
           {/* Desktop nav */}
@@ -184,12 +207,12 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                     {/* User info */}
                     <div className="p-4 border-b border-border">
                       <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold">
-                          L
+                        <div className="h-10 w-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground">
+                          <User className="h-4 w-4" />
                         </div>
                         <div className="min-w-0">
-                          <p className="text-sm font-semibold text-foreground">Lettore</p>
-                          <p className="text-xs text-muted-foreground truncate">lettore@biblion.app</p>
+                          <p className="text-sm font-semibold text-foreground">{user?.name || "Utente"}</p>
+                          <p className="text-xs text-muted-foreground truncate">{user?.email || "utente@bixblion.app"}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">
@@ -218,7 +241,10 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
                     {/* Logout */}
                     <div className="border-t border-border py-1.5">
-                      <button className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-destructive hover:bg-destructive/5 transition-colors">
+                      <button
+                        onClick={handleLogout}
+                        className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-destructive hover:bg-destructive/5 transition-colors"
+                      >
                         <LogOut className="h-4 w-4" />
                         Esci
                       </button>
@@ -235,9 +261,21 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
 
       {/* Main content */}
-      <main className="pb-20 md:pb-8">
+      <main className="pb-20 md:pb-8 flex-1">
         {children}
       </main>
+
+      <footer className="border-t border-border bg-card/60 backdrop-blur-sm">
+        <div className="container py-3 text-xs text-muted-foreground flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+          <span>© 2026 Bixblion</span>
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <Link to="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
+            <a href="mailto:support@bixblion.app" className="hover:text-foreground transition-colors">support@bixblion.app</a>
+            <Link to="/faq" className="hover:text-foreground transition-colors">FAQ</Link>
+            <span>Community, libreria e sfide di lettura</span>
+          </div>
+        </div>
+      </footer>
 
       {/* Mobile bottom nav */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-background/95 backdrop-blur-lg">

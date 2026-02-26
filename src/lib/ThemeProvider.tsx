@@ -13,14 +13,14 @@ export const useTheme = () => useContext(ThemeContext);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>(() => {
-    return (localStorage.getItem("biblion-theme") as Theme) || "light";
+    return (localStorage.getItem("bixblion-theme") as Theme) || "light";
   });
 
   useEffect(() => {
     const root = document.documentElement;
     root.classList.remove("dark", "sepia");
     if (theme !== "light") root.classList.add(theme);
-    localStorage.setItem("biblion-theme", theme);
+    localStorage.setItem("bixblion-theme", theme);
   }, [theme]);
 
   return (

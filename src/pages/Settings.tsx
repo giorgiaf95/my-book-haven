@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Settings as SettingsIcon, User, Bell, Palette, Shield, Globe, LogOut, Check } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/lib/ThemeProvider";
+import { useAuth } from "@/lib/auth";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 type SettingsSection = "profile" | "notifications" | "appearance" | "privacy" | "language";
 
@@ -20,7 +23,11 @@ const themes = [
   { id: "sepia" as const, name: "Seppia", preview: "bg-[hsl(35,40%,92%)]", border: "border-[hsl(30,25%,78%)]", dot: "bg-[hsl(28,65%,48%)]" },
 ];
 
+const PROFILE_STORAGE_KEY = "bixblion-profile";
+
 const Settings = () => {
+  const navigate = useNavigate();
+  const { user, updateProfile, logout } = useAuth();
   const [active, setActive] = useState<SettingsSection>("profile");
   const [notifEmail, setNotifEmail] = useState(true);
   const [notifPush, setNotifPush] = useState(true);
@@ -30,6 +37,75 @@ const Settings = () => {
   const [showActivity, setShowActivity] = useState(true);
   const [language, setLanguage] = useState("it");
   const { theme, setTheme } = useTheme();
+  const [profileName, setProfileName] = useState("");
+  const [profileUsername, setProfileUsername] = useState("");
+  const [profileBio, setProfileBio] = useState("");
+  const [profileLocation, setProfileLocation] = useState("");
+  const [profileEmail, setProfileEmail] = useState("");
+  const [profileWebsite, setProfileWebsite] = useState("");
+
+  useEffect(() => {
+    const raw = localStorage.getItem(PROFILE_STORAGE_KEY);
+    let overrides: { username?: string; bio?: string; location?: string; website?: string } = {};
+    if (raw) {
+      try {
+        overrides = JSON.parse(raw) as typeof overrides;
+      } catch {
+        overrides = {};
+      }
+    }
+
+    setProfileName(user?.name || "Marco Lettore");
+    setProfileEmail(user?.email || "lettore@bixblion.app");
+    setProfileUsername(overrides.username || "@marcolettore");
+    setProfileBio(overrides.bio || "Appassionato lettore e collezionista di storie.");
+    setProfileLocation(overrides.location || "Milano, Italia");
+    setProfileWebsite(overrides.website || "marcolettore.blog");
+  }, [user]);
+
+  const handleSaveProfile = () => {
+    const cleanName = profileName.trim();
+    const cleanEmail = profileEmail.trim().toLowerCase();
+    const normalizedUsername = profileUsername.trim().replace(/\s+/g, "");
+    const username = normalizedUsername.startsWith("@") ? normalizedUsername : `@${normalizedUsername}`;
+
+    if (cleanName.length < 2) {
+      toast("Inserisci un nome valido");
+      return;
+    }
+    if (username.length < 4) {
+      toast("Username non valido");
+      return;
+    }
+    if (!cleanEmail.includes("@")) {
+      toast("Inserisci una email valida");
+      return;
+    }
+
+    const authResult = updateProfile({ name: cleanName, email: cleanEmail });
+    if (!authResult.ok) {
+      toast(authResult.message || "Salvataggio non riuscito");
+      return;
+    }
+
+    localStorage.setItem(
+      PROFILE_STORAGE_KEY,
+      JSON.stringify({
+        name: cleanName,
+        username,
+        bio: profileBio.trim(),
+        location: profileLocation.trim(),
+        website: profileWebsite.trim(),
+      })
+    );
+
+    toast("Modifiche profilo salvate con successo");
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login", { replace: true });
+  };
 
   const Toggle = ({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) => (
     <button
@@ -76,25 +152,29 @@ const Settings = () => {
               <div className="space-y-4">
                 <div>
                   <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Nome</label>
-                  <input defaultValue="Marco Lettore" className="mt-1 w-full px-3 py-2 rounded-xl bg-background border border-border text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                  <input value={profileName} onChange={(e) => setProfileName(e.target.value)} className="mt-1 w-full px-3 py-2 rounded-xl bg-background border border-border text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30" />
                 </div>
                 <div>
                   <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Username</label>
-                  <input defaultValue="@marcolettore" className="mt-1 w-full px-3 py-2 rounded-xl bg-background border border-border text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                  <input value={profileUsername} onChange={(e) => setProfileUsername(e.target.value)} className="mt-1 w-full px-3 py-2 rounded-xl bg-background border border-border text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30" />
                 </div>
                 <div>
                   <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Bio</label>
-                  <textarea defaultValue="Appassionato lettore e collezionista di storie." rows={3} className="mt-1 w-full px-3 py-2 rounded-xl bg-background border border-border text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none" />
+                  <textarea value={profileBio} onChange={(e) => setProfileBio(e.target.value)} rows={3} className="mt-1 w-full px-3 py-2 rounded-xl bg-background border border-border text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none" />
                 </div>
                 <div>
                   <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Posizione</label>
-                  <input defaultValue="Milano, Italia" className="mt-1 w-full px-3 py-2 rounded-xl bg-background border border-border text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                  <input value={profileLocation} onChange={(e) => setProfileLocation(e.target.value)} className="mt-1 w-full px-3 py-2 rounded-xl bg-background border border-border text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Sito web</label>
+                  <input value={profileWebsite} onChange={(e) => setProfileWebsite(e.target.value)} className="mt-1 w-full px-3 py-2 rounded-xl bg-background border border-border text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30" />
                 </div>
                 <div>
                   <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Email</label>
-                  <input defaultValue="lettore@biblion.app" type="email" className="mt-1 w-full px-3 py-2 rounded-xl bg-background border border-border text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                  <input value={profileEmail} onChange={(e) => setProfileEmail(e.target.value)} type="email" className="mt-1 w-full px-3 py-2 rounded-xl bg-background border border-border text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30" />
                 </div>
-                <button className="px-5 py-2 rounded-xl bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity">Salva modifiche</button>
+                <button onClick={handleSaveProfile} className="px-5 py-2 rounded-xl bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity">Salva modifiche</button>
               </div>
             </div>
           )}
@@ -189,7 +269,7 @@ const Settings = () => {
 
           {/* Logout */}
           <div className="mt-8 pt-5 border-t border-border">
-            <button className="flex items-center gap-2 text-sm text-destructive hover:underline">
+            <button onClick={handleLogout} className="flex items-center gap-2 text-sm text-destructive hover:underline">
               <LogOut className="h-4 w-4" /> Esci dal tuo account
             </button>
           </div>

@@ -5,9 +5,11 @@ import { BookCard } from "@/components/BookCard";
 import { mockBooks, allGenres } from "@/lib/mockData";
 import { cn } from "@/lib/utils";
 
+type WishlistSortBy = "dateAdded" | "title" | "author" | "rating";
+
 const Wishlist = () => {
   const [view, setView] = useState<"grid" | "list">("grid");
-  const [sortBy, setSortBy] = useState<"dateAdded" | "title" | "author" | "rating">("dateAdded");
+  const [sortBy, setSortBy] = useState<WishlistSortBy>("dateAdded");
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
 
@@ -46,7 +48,7 @@ const Wishlist = () => {
             <List className="h-4 w-4" />
           </button>
         </div>
-        <select value={sortBy} onChange={e => setSortBy(e.target.value as any)}
+        <select value={sortBy} onChange={e => setSortBy(e.target.value as WishlistSortBy)}
           className="px-3 py-2 rounded-xl bg-card border border-border text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30">
           <option value="dateAdded">Data aggiunta</option>
           <option value="title">Titolo</option>

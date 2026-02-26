@@ -1,27 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ListChecks, Plus, BookOpen, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { ListChecks, Plus, BookOpen, MoreHorizontal } from "lucide-react";
 import { motion } from "framer-motion";
-import { mockBooks } from "@/lib/mockData";
-
-interface BookList {
-  id: string;
-  name: string;
-  description: string;
-  emoji: string;
-  bookIds: string[];
-  isPublic: boolean;
-  createdAt: string;
-}
-
-const mockLists: BookList[] = [
-  { id: "l1", name: "Da leggere quest'estate", description: "Letture leggere per le vacanze", emoji: "☀️", bookIds: ["3", "5", "7"], isPublic: true, createdAt: "2025-12-01" },
-  { id: "l2", name: "Classici imperdibili", description: "I classici che tutti dovrebbero leggere", emoji: "📜", bookIds: ["1", "2", "6"], isPublic: true, createdAt: "2025-10-15" },
-  { id: "l3", name: "Fantascienza", description: "I migliori sci-fi della mia collezione", emoji: "🚀", bookIds: ["4", "8"], isPublic: false, createdAt: "2025-11-20" },
-];
+import { mockBooks, mockUserLists, type UserBookList } from "@/lib/mockData";
 
 const MyLists = () => {
-  const [lists] = useState<BookList[]>(mockLists);
+  const [lists] = useState<UserBookList[]>(mockUserLists);
   const [showCreate, setShowCreate] = useState(false);
 
   return (

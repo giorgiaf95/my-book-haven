@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Trophy, Flame, Target, Clock } from "lucide-react";
 import { motion } from "framer-motion";
 import { ChallengeCard } from "@/components/ChallengeCard";
@@ -21,6 +21,15 @@ const leaderboard = [
 
 const Challenges = () => {
   const [activeTab, setActiveTab] = useState("active");
+  const filteredChallenges = useMemo(() => {
+    if (activeTab === "completed") {
+      return mockChallenges.filter(challenge => challenge.current >= challenge.target);
+    }
+    if (activeTab === "available") {
+      return mockChallenges;
+    }
+    return mockChallenges.filter(challenge => challenge.current < challenge.target);
+  }, [activeTab]);
 
   return (
     <div className="container py-6 md:py-10 space-y-8">
@@ -83,7 +92,7 @@ const Challenges = () => {
 
       {/* Challenges */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {mockChallenges.map((challenge, i) => (
+        {filteredChallenges.map((challenge, i) => (
           <ChallengeCard key={challenge.id} challenge={challenge} index={i} />
         ))}
       </div>

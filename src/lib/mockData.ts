@@ -15,7 +15,17 @@ export interface Book {
   publisher?: string;
   year?: number;
   language?: string;
+  saga?: string;
   synopsis?: string;
+}
+
+export interface ReviewComment {
+  id: string;
+  reviewId: string;
+  userName: string;
+  userAvatar: string;
+  text: string;
+  date: string;
 }
 
 export interface BookReview {
@@ -27,8 +37,9 @@ export interface BookReview {
   text: string;
   date: string;
   likes: number;
+  dislikes?: number;
+  comments?: ReviewComment[];
 }
-
 
 export interface ReadingChallenge {
   id: string;
@@ -51,6 +62,25 @@ export interface CommunityGroup {
   isJoined: boolean;
 }
 
+export interface UserProfile {
+  id: string;
+  name: string;
+  avatar: string;
+  bio: string;
+  favoriteGenres: string[];
+  language: string;
+}
+
+export interface UserBookList {
+  id: string;
+  name: string;
+  description: string;
+  emoji: string;
+  bookIds: string[];
+  isPublic: boolean;
+  createdAt: string;
+}
+
 export const mockBooks: Book[] = [
   {
     id: '1',
@@ -68,6 +98,7 @@ export const mockBooks: Book[] = [
     publisher: 'Bompiani',
     year: 1980,
     language: 'Italiano',
+    saga: 'La rosa e il labirinto',
     synopsis: 'Siamo nel 1327. Il frate francescano Guglielmo da Baskerville, accompagnato dal giovane novizio Adso da Melk, arriva in un\'abbazia benedettina dell\'Italia settentrionale per partecipare a un\'importante disputa teologica. Ma il monastero è scosso da una serie di morti misteriose. I monaci muoiono uno dopo l\'altro in circostanze inspiegabili, e Guglielmo, con il suo acume da investigatore, inizia a indagare. La chiave del mistero sembra celarsi nella biblioteca, un immenso labirinto di conoscenza proibita. Un romanzo che intreccia giallo, storia, filosofia e semiotica.',
   },
   {
@@ -86,6 +117,7 @@ export const mockBooks: Book[] = [
     publisher: 'Mondadori',
     year: 1967,
     language: 'Italiano',
+    saga: 'Cronache di Macondo',
     synopsis: 'La storia della famiglia Buendía, dalla fondazione del villaggio di Macondo fino alla sua distruzione, attraverso sette generazioni. Un affresco epico dove il reale e il fantastico si fondono in un racconto di amori impossibili, guerre civili, solitudine e destino ciclico.',
   },
   {
@@ -100,6 +132,8 @@ export const mockBooks: Book[] = [
     status: 'reading',
     dateAdded: '2024-03-10',
     progress: 65,
+    language: 'Italiano',
+    saga: 'Ciclo della giovinezza',
     description: 'Una storia d\'amore e perdita nella Tokyo degli anni \'60.',
   },
   {
@@ -113,6 +147,8 @@ export const mockBooks: Book[] = [
     tags: ['spazio', 'epico', 'preferiti'],
     status: 'read',
     dateAdded: '2024-04-05',
+    language: 'Italiano',
+    saga: 'Cronache di Dune',
     description: 'L\'epica saga di Paul Atreides su Arrakis.',
   },
   {
@@ -127,6 +163,8 @@ export const mockBooks: Book[] = [
     status: 'reading',
     dateAdded: '2024-05-12',
     progress: 30,
+    language: 'Italiano',
+    saga: 'Il Cimitero dei Libri Dimenticati',
     description: 'Un ragazzo scopre un libro misterioso nel Cimitero dei Libri Dimenticati.',
   },
   {
@@ -140,6 +178,7 @@ export const mockBooks: Book[] = [
     tags: ['classico', 'breve', 'preferiti'],
     status: 'read',
     dateAdded: '2024-06-01',
+    language: 'Italiano',
     description: 'Un pilota incontra un piccolo principe nel deserto.',
   },
   {
@@ -153,6 +192,7 @@ export const mockBooks: Book[] = [
     tags: ['scienza', 'evoluzione'],
     status: 'to-read',
     dateAdded: '2024-07-15',
+    language: 'Italiano',
     description: 'Una breve storia dell\'umanità.',
   },
   {
@@ -166,6 +206,7 @@ export const mockBooks: Book[] = [
     tags: ['classico', 'politica'],
     status: 'to-read',
     dateAdded: '2024-08-20',
+    language: 'Italiano',
     description: 'Un mondo totalitario dove il Grande Fratello controlla tutto.',
   },
 ];
@@ -180,6 +221,10 @@ export const mockReviews: BookReview[] = [
     text: 'Un capolavoro assoluto. La costruzione del mistero è magistrale e la descrizione dell\'abbazia ti trasporta nel medioevo. Eco riesce a mescolare erudizione e suspense in modo unico.',
     date: '2024-11-20',
     likes: 24,
+    dislikes: 2,
+    comments: [
+      { id: 'c1', reviewId: 'r1', userName: 'Elena B.', userAvatar: 'EB', text: 'Concordo, l\'atmosfera è incredibile.', date: '2025-01-02' },
+    ],
   },
   {
     id: 'r2',
@@ -190,6 +235,10 @@ export const mockReviews: BookReview[] = [
     text: 'Affascinante ma impegnativo. Le digressioni filosofiche a volte rallentano la trama, ma il finale ripaga ogni sforzo. Consigliato a lettori pazienti.',
     date: '2024-10-15',
     likes: 18,
+    dislikes: 1,
+    comments: [
+      { id: 'c2', reviewId: 'r2', userName: 'Marco R.', userAvatar: 'MR', text: 'È vero, ma il finale vale tutto.', date: '2025-01-15' },
+    ],
   },
   {
     id: 'r3',
@@ -200,6 +249,8 @@ export const mockReviews: BookReview[] = [
     text: 'Lo rileggo ogni anno e ogni volta scopro dettagli nuovi. La biblioteca labirintica è una delle immagini più potenti della letteratura moderna.',
     date: '2024-09-08',
     likes: 31,
+    dislikes: 0,
+    comments: [],
   },
   {
     id: 'r4',
@@ -210,6 +261,10 @@ export const mockReviews: BookReview[] = [
     text: 'Poesia pura. Márquez crea un universo dove il tempo è circolare e la magia è quotidiana. Un libro che ti cambia il modo di leggere.',
     date: '2024-12-01',
     likes: 42,
+    dislikes: 3,
+    comments: [
+      { id: 'c3', reviewId: 'r4', userName: 'Sofia V.', userAvatar: 'SV', text: 'Una delle mie letture preferite di sempre.', date: '2025-02-10' },
+    ],
   },
   {
     id: 'r5',
@@ -220,9 +275,10 @@ export const mockReviews: BookReview[] = [
     text: 'Murakami sa raccontare la malinconia come nessun altro. Toru Watanabe è un personaggio indimenticabile. Lettura perfetta per le sere d\'autunno.',
     date: '2025-01-10',
     likes: 15,
+    dislikes: 2,
+    comments: [],
   },
 ];
-
 
 export const mockChallenges: ReadingChallenge[] = [
   {
@@ -323,6 +379,41 @@ export const mockCommunities: CommunityGroup[] = [
     isJoined: true,
   },
 ];
+
+export const mockUsers: UserProfile[] = [
+  {
+    id: 'u1',
+    name: 'Sofia V.',
+    avatar: 'SV',
+    bio: 'Leggo narrativa contemporanea e classici.',
+    favoriteGenres: ['Narrativa', 'Classico'],
+    language: 'Italiano',
+  },
+  {
+    id: 'u2',
+    name: 'Andrea M.',
+    avatar: 'AM',
+    bio: 'Fan di fantascienza e saghe epiche.',
+    favoriteGenres: ['Fantascienza', 'Avventura'],
+    language: 'Italiano',
+  },
+  {
+    id: 'u3',
+    name: 'Giulia F.',
+    avatar: 'GF',
+    bio: 'Recensioni brevi e dritte al punto.',
+    favoriteGenres: ['Romanzo', 'Mistero'],
+    language: 'Italiano',
+  },
+];
+
+export const mockUserLists: UserBookList[] = [
+  { id: 'l1', name: "Da leggere quest'estate", description: 'Letture leggere per le vacanze', emoji: '☀️', bookIds: ['3', '5', '7'], isPublic: true, createdAt: '2025-12-01' },
+  { id: 'l2', name: 'Classici imperdibili', description: 'I classici che tutti dovrebbero leggere', emoji: '📜', bookIds: ['1', '2', '6'], isPublic: true, createdAt: '2025-10-15' },
+  { id: 'l3', name: 'Fantascienza', description: 'I migliori sci-fi della mia collezione', emoji: '🚀', bookIds: ['4', '8'], isPublic: false, createdAt: '2025-11-20' },
+];
+
+export const supportedLanguages = ['Tutte', 'Italiano', 'Inglese', 'Spagnolo', 'Francese'];
 
 export const allGenres = ['Storico', 'Giallo', 'Realismo magico', 'Narrativa', 'Romanzo', 'Fantascienza', 'Avventura', 'Mistero', 'Fiaba', 'Filosofia', 'Saggistica', 'Storia', 'Distopia'];
 export const allTags = ['medievale', 'monastero', 'preferiti', 'classico', 'latinoamerica', 'giappone', 'amore', 'spazio', 'epico', 'barcellona', 'libri', 'breve', 'scienza', 'evoluzione', 'politica'];

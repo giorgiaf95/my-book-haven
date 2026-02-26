@@ -1,13 +1,39 @@
 import { Link } from "react-router-dom";
-import { BookOpen, ArrowRight, Users, MessageSquare, Newspaper, Clock } from "lucide-react";
+import { ArrowRight, Users, MessageSquare, Clock, Megaphone, Trophy, Wrench, Newspaper } from "lucide-react";
 import { motion } from "framer-motion";
 import { BookCard } from "@/components/BookCard";
-import { mockBooks, mockCommunities } from "@/lib/mockData";
+import { mockBooks } from "@/lib/mockData";
+import { useAuth } from "@/lib/auth";
 
-const platformNews = [
-  { id: "n1", title: "Nuova funzionalità: Scansione QR per aggiungere libri", date: "2026-02-08", emoji: "📸", link: "/settings" },
-  { id: "n2", title: "Sfida di San Valentino: Leggi un romanzo d'amore", date: "2026-02-05", emoji: "💝", link: "/challenges" },
-  { id: "n3", title: "Aggiornamento temi: 3 nuovi temi disponibili", date: "2026-02-01", emoji: "🎨", link: "/settings" },
+const newsHighlights = [
+  {
+    id: "news-1",
+    title: "Notizia importante",
+    text: "È online la nuova classifica mensile dei gruppi più attivi.",
+    icon: Newspaper,
+    badge: "News",
+  },
+  {
+    id: "news-2",
+    title: "Concorso in corso",
+    text: "Partecipa al contest 'Recensione Perfetta' entro il 15 marzo 2026.",
+    icon: Megaphone,
+    badge: "Concorso",
+  },
+  {
+    id: "news-3",
+    title: "Vincitore della premiazione",
+    text: "La community 'Book & Coffee' vince come gruppo del mese.",
+    icon: Trophy,
+    badge: "Premiazione",
+  },
+  {
+    id: "news-4",
+    title: "Prossimi aggiornamenti",
+    text: "In arrivo statistiche avanzate di lettura e miglioramenti alle liste.",
+    icon: Wrench,
+    badge: "Roadmap",
+  },
 ];
 
 const friendsActivity = [
@@ -18,25 +44,57 @@ const friendsActivity = [
 ];
 
 const groupUpdates = [
-  { id: "gu1", group: "Lettori Notturni", groupId: "1", text: "Nuovo libro del mese: 'La metamorfosi' di Kafka", time: "3 ore fa", members: 3421 },
-  { id: "gu2", group: "Book & Coffee", groupId: "3", text: "Meetup virtuale questo sabato alle 18:00!", time: "1 giorno fa", members: 5234 },
-  { id: "gu3", group: "Manga & Fumetti", groupId: "6", text: "Classifica manga più letti di Gennaio pubblicata", time: "2 giorni fa", members: 6789 },
+  { id: "gu1", group: "Lettori Notturni", groupId: "1", text: "Nuovo libro del mese: 'La metamorfosi' di Kafka", time: "3 ore fa" },
+  { id: "gu2", group: "Book & Coffee", groupId: "3", text: "Meetup virtuale questo sabato alle 18:00!", time: "1 giorno fa" },
+  { id: "gu3", group: "Manga & Fumetti", groupId: "6", text: "Classifica manga più letti di Gennaio pubblicata", time: "2 giorni fa" },
 ];
 
 const Index = () => {
-  const currentlyReading = mockBooks.filter(b => b.status === "reading");
+  const { user } = useAuth();
+  const currentlyReading = mockBooks.filter((book) => book.status === "reading");
+  const displayName = user?.name?.trim().split(/\s+/)[0] || "Lettore";
 
   return (
-    <div className="container py-6 md:py-10 space-y-8 max-w-4xl">
-      {/* Greeting */}
+    <div className="container py-6 md:py-10 space-y-8 max-w-5xl">
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}>
         <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">
-          Bentornato, <span className="text-primary">Marco</span> 👋
+          Bentornato, <span className="text-primary">{displayName}</span> 👋
         </h1>
         <p className="text-sm text-muted-foreground mt-1">Ecco cosa è successo mentre non c'eri</p>
       </motion.div>
 
-      {/* Currently Reading */}
+      <section className="rounded-2xl bg-gradient-to-br from-secondary/70 via-card to-accent/10 border border-border p-4 md:p-5 shadow-card">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="font-display text-lg font-bold text-foreground flex items-center gap-2">
+            <Newspaper className="h-4 w-4 text-primary" /> News
+          </h2>
+          <span className="text-xs text-muted-foreground">Aggiornato oggi</span>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {newsHighlights.map((news, i) => {
+            const Icon = news.icon;
+            return (
+              <motion.div
+                key={news.id}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.05 + i * 0.05 }}
+                className="rounded-xl bg-background/85 border border-border p-3 shadow-card"
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground font-semibold">
+                    {news.badge}
+                  </span>
+                  <Icon className="h-4 w-4 text-muted-foreground" />
+                </div>
+                <p className="text-sm font-semibold text-foreground mt-2">{news.title}</p>
+                <p className="text-xs text-muted-foreground mt-1">{news.text}</p>
+              </motion.div>
+            );
+          })}
+        </div>
+      </section>
+
       {currentlyReading.length > 0 && (
         <section>
           <div className="flex items-center justify-between mb-3">
@@ -55,37 +113,35 @@ const Index = () => {
         </section>
       )}
 
-      {/* Friends Activity */}
       <section>
         <h2 className="font-display text-lg font-bold text-foreground flex items-center gap-2 mb-3">
           <Users className="h-4 w-4 text-primary" /> Attività amici
         </h2>
         <div className="space-y-2">
-          {friendsActivity.map((a, i) => (
+          {friendsActivity.map((activity, i) => (
             <motion.div
-              key={a.id}
+              key={activity.id}
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: i * 0.05 }}
               className="flex items-center gap-3 rounded-xl bg-card border border-border p-3 shadow-card"
             >
               <Link to="/profile" className="h-9 w-9 rounded-full bg-secondary flex items-center justify-center text-secondary-foreground text-xs font-bold shrink-0 hover:ring-2 hover:ring-primary/30 transition-all">
-                {a.avatar}
+                {activity.avatar}
               </Link>
               <div className="flex-1 min-w-0">
                 <p className="text-sm text-foreground">
-                  <Link to="/profile" className="font-semibold hover:text-primary transition-colors">{a.user}</Link>{" "}
-                  <span className="text-muted-foreground">{a.action}</span>{" "}
-                  <Link to={`/book/${a.bookId}`} className="font-medium text-primary hover:underline">{a.book}</Link>
+                  <Link to="/profile" className="font-semibold hover:text-primary transition-colors">{activity.user}</Link>{" "}
+                  <span className="text-muted-foreground">{activity.action}</span>{" "}
+                  <Link to={`/book/${activity.bookId}`} className="font-medium text-primary hover:underline">{activity.book}</Link>
                 </p>
-                <p className="text-[10px] text-muted-foreground">{a.time}</p>
+                <p className="text-[10px] text-muted-foreground">{activity.time}</p>
               </div>
             </motion.div>
           ))}
         </div>
       </section>
 
-      {/* Group Updates */}
       <section>
         <div className="flex items-center justify-between mb-3">
           <h2 className="font-display text-lg font-bold text-foreground flex items-center gap-2">
@@ -96,46 +152,20 @@ const Index = () => {
           </Link>
         </div>
         <div className="space-y-2">
-          {groupUpdates.map((gu, i) => (
+          {groupUpdates.map((update, i) => (
             <motion.div
-              key={gu.id}
+              key={update.id}
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.1 + i * 0.05 }}
               className="rounded-xl bg-card border border-border p-4 shadow-card"
             >
               <div className="flex items-center justify-between">
-                <Link to={`/community/${gu.groupId}`} className="text-xs font-semibold text-accent hover:underline">{gu.group}</Link>
-                <span className="text-[10px] text-muted-foreground">{gu.time}</span>
+                <Link to={`/community/${update.groupId}`} className="text-xs font-semibold text-accent hover:underline">{update.group}</Link>
+                <span className="text-[10px] text-muted-foreground">{update.time}</span>
               </div>
-              <p className="text-sm text-foreground mt-1">{gu.text}</p>
+              <p className="text-sm text-foreground mt-1">{update.text}</p>
             </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* Platform News */}
-      <section>
-        <h2 className="font-display text-lg font-bold text-foreground flex items-center gap-2 mb-3">
-          <Newspaper className="h-4 w-4 text-primary" /> Novità dalla piattaforma
-        </h2>
-        <div className="space-y-2">
-          {platformNews.map((news, i) => (
-            <Link key={news.id} to={news.link}>
-              <motion.div
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 + i * 0.05 }}
-                className="flex items-center gap-3 rounded-xl bg-card border border-border p-3 shadow-card hover:shadow-card-hover transition-all"
-              >
-                <span className="text-xl">{news.emoji}</span>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-foreground">{news.title}</p>
-                  <p className="text-[10px] text-muted-foreground">{news.date}</p>
-                </div>
-                <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
-              </motion.div>
-            </Link>
           ))}
         </div>
       </section>
